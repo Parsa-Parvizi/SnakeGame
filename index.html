@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -14,17 +14,17 @@
         <h1 class="mb-4">Snake Game</h1>
         <div id="timer">Time: 0.0s</div>
         <div id="scoreboard" class="text-center">
-            <h2 id="currentScore" class="mb-2"> Scroe</h2>
+            <h2 id="currentScore" class="mb-2">Score: 0</h2>
         </div>
-        <div id="difficulty-menu">
-            <button onclick="startGame('easy')">Easy</button>
-            <button onclick="startGame('medium')">Medium</button>
-            <button onclick="startGame('hard')">Hard</button>
+        <div id="difficulty-menu" class="mb-4">
+            <button onclick="startGame('easy')" class="btn btn-outline-success mx-2">Easy</button>
+            <button onclick="startGame('medium')" class="btn btn-outline-warning mx-2">Medium</button>
+            <button onclick="startGame('hard')" class="btn btn-outline-danger mx-2">Hard</button>
         </div>
         <canvas id="gameCanvas" width="400" height="400" class="border border-dark rounded"></canvas>
         <div class="mt-3">
-            <button id="start" class="btn btn-success mr-2"> Start Game</button>
-            <button id="restart" class="btn btn-primary" style="display: none;"> Restart</button>
+            <button id="start" class="btn btn-success mr-2">Start Game</button>
+            <button id="restart" class="btn btn-primary" style="display: none;">Restart</button>
         </div>
     </div>
     <script src="script.js"></script>

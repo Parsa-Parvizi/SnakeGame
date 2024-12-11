@@ -6,7 +6,25 @@
     --canvas-background: #f8f9fa;
     --snake-color: #28a745;
     --food-color: #dc3545;
+    --button-background: #28a745;
+    --button-text-color: white;
+    --button-hover-background: #218838;
+}
 
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: var(--background-color);
+    font-family: 'Arial', sans-serif;
 }
 
 #game-container {
@@ -20,30 +38,17 @@
     background-color: var(--background-color);
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-
-}
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-
-}
-
-body {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: var(--background-color);
-    font-family: 'Arial', sans-serif;
 }
 
 h1 {
     font-size: 2rem;
-    margin-bottom: 1rem;
     color: var(--text-color);
+    text-align: center;
+    margin-top: 50px;
+    /* Adjust the top margin as needed */
+    margin-bottom: 20px;
+    /* Adjust the bottom margin as needed */
+
 }
 
 button {
@@ -56,6 +61,7 @@ button {
     font-size: 16px;
     font-weight: bold;
     transition: background-color 0.3s;
+    margin: 5px;
 }
 
 button:hover {
@@ -78,6 +84,8 @@ canvas {
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     margin-bottom: 20px;
+    width: 100%;
+    height: auto;
 }
 
 #score {
@@ -90,6 +98,10 @@ canvas {
 }
 
 @media (max-width: 600px) {
+    h1 {
+        font-size: 1.5rem;
+    }
+
     canvas {
         width: 100%;
         height: auto;
@@ -101,8 +113,8 @@ canvas {
 
     button {
         font-size: 14px;
+        padding: 8px 16px;
     }
-
 }
 
 #gameCanvas {
@@ -137,4 +149,15 @@ canvas {
 
 #gameOver button:hover {
     background-color: var(--button-hover-background);
+
+}
+
+#difficulty-menu button {
+    font-size: 18px;
+    padding: 10px 20px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+#difficulty-menu button:hover {
+    background-color: rgba(0, 0, 0, 0.1);
 }

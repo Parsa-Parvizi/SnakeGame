@@ -1,4 +1,3 @@
-// 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const scoreDisplay = document.getElementById('currentScore');
@@ -16,6 +15,7 @@ let timeElapsed = 0;
 let isPaused = false;
 let foodCounter = 0;
 let specialFood;
+let timerInterval;
 
 startButton.addEventListener('click', () => startGame('medium'));
 restartButton.addEventListener('click', restartGame);
@@ -42,13 +42,10 @@ const startGame = (difficulty) => {
     // Reset game variables
     snake = [{ x: 9 * box, y: 9 * box }];
     direction = 'RIGHT';
-    food = {
-        x: Math.floor(Math.random() * 18 + 1) * box,
-        y: Math.floor(Math.random() * 18 + 1) * box
-    };
+    foodCounter = 0;
+    food = generateFood();
     score = 0;
     timeElapsed = 0; // Reset time elapsed
-    foodCounter = 0; // Reset food counter
     specialFood = null; // Reset special food
 
     // Update score display
@@ -60,9 +57,16 @@ const startGame = (difficulty) => {
     obstacleInterval = setInterval(addObstacle, 20000); // Add a new obstacle every 20 seconds
 
     // Hide the start button and show the restart button
-    startButton.style.display = 'none';
-    restartButton.style.display = 'none';
+    startButton.style.display = 'none'; // Hide start button
+    restartButton.style.display = 'none'; // Hide restart button
     document.getElementById('difficulty-menu').style.display = 'none';
+
+    timeElapsed = 0; // Reset time elapsed
+    timerDisplay.innerHTML = `Time: ${timeElapsed}s`; // Reset timer display
+    timerInterval = setInterval(() => {
+        timeElapsed += gameSpeed / 1000; // Increase time based on game speed
+        timerDisplay.innerHTML = `Time: ${timeElapsed.toFixed(1)}s`; // Display time with one decimal
+    }, gameSpeed); // Update timer every gameSpeed milliseconds
 };
 
 function createObstacles(count) {
@@ -78,6 +82,7 @@ function createObstacles(count) {
 function restartGame() {
     clearInterval(gameInterval);
     clearInterval(obstacleInterval); // Clear the obstacle interval
+    clearInterval(timerInterval); // Clear the timer interval
     snake = [{ x: 9 * box, y: 9 * box }];
     score = 0;
     timeElapsed = 0; // Reset time elapsed
@@ -85,14 +90,13 @@ function restartGame() {
     specialFood = null; // Reset special food
     scoreDisplay.innerHTML = `Score: ${score}`;
     timerDisplay.innerHTML = `Time: ${timeElapsed}s`; // Reset timer display
-    startButton.style.display = 'block'; // Show start button
+    startButton.style.display = 'none'; // Hide start button
     restartButton.style.display = 'none'; // Hide restart button
     obstacles = []; // Reset obstacles
 }
 
 
 function draw() {
-
     if (isPaused) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -104,30 +108,6 @@ function draw() {
     }
 
     drawFoodAndObstacles();
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Draw the snake
-    for (let i = 0; i < snake.length; i++) {
-        ctx.fillStyle = (i === 0) ? '#28a745' : '#6c757d'; // Head color green, body gray
-        ctx.fillRect(snake[i].x, snake[i].y, box, box);
-    }
-
-    // Draw the food
-    ctx.fillStyle = '#dc3545'; // Food color red
-    ctx.fillRect(food.x, food.y, box, box);
-
-    // Draw special food if it exists
-    if (specialFood) {
-        ctx.fillStyle = '#FFD700'; // Special food color (gold)
-        ctx.fillRect(specialFood.x, specialFood.y, box, box);
-    }
-
-    // Draw obstacles
-    ctx.fillStyle = '#ffc107'; // Obstacle color yellow
-    for (const obstacle of obstacles) {
-        ctx.fillRect(obstacle.x, obstacle.y, box, box);
-    }
 
     // Get the current head position
     const snakeX = snake[0].x;
@@ -143,20 +123,24 @@ function draw() {
         if (foodCounter === 5) {
             // Create special food
             specialFood = {
-                x: Math.floor(Math.random() * 18 + 1) * box,
-                y: Math.floor(Math.random() * 18 + 1) * box
+                x: Math.floor(Math.random() * (canvas.width / box)) * box,
+                y: Math.floor(Math.random() * (canvas.height / box)) * box
             };
             foodCounter = 0; // Reset food counter
         }
 
         // Generate new regular food
-        food = {
-            x: Math.floor(Math.random() * 18 + 1) * box,
-            y: Math.floor(Math.random() * 18 + 1) * box
-        };
+        food = generateFood();
     } else {
         // Remove the tail
         snake.pop();
+    }
+
+    // Check if the snake eats the special food
+    if (specialFood && snakeX === specialFood.x && snakeY === specialFood.y) {
+        score += 5; // Add 5 points for special food
+        scoreDisplay.innerHTML = `Score: ${score}`;
+        specialFood = null; // Remove special food after eating
     }
 
     // Check if the snake eats the special food
@@ -184,7 +168,19 @@ function draw() {
         clearInterval(obstacleInterval); // Clear the obstacle interval
         restartButton.style.display = 'block'; // Show restart button
         startButton.style.display = 'none'; // Hide start button
+        clearInterval(timerInterval); // Stop the timer
     }
+}
+
+function changeDirection(event) {
+    if (event.keyCode === 80) { // Key "P"
+        togglePause(); // Call the togglePause function
+    } else if (event.keyCode === 71) { // Key "G"
+        restartGame(); // Restart the game
+    } else if (event.keyCode === 37 && direction !== 'RIGHT') direction = 'LEFT';
+    else if (event.keyCode === 38 && direction !== 'DOWN') direction = 'UP';
+    else if (event.keyCode === 39 && direction !== 'LEFT') direction = 'RIGHT';
+    else if (event.keyCode === 40 && direction !== 'UP') direction = 'DOWN';
 }
 
 function changeDirection(event) {
@@ -215,80 +211,22 @@ function collisionWithObstacles(snake) {
 }
 
 function togglePause() {
-
     isPaused = !isPaused;
     if (isPaused) {
         clearInterval(gameInterval);
     } else {
         gameInterval = setInterval(draw, gameSpeed);
     }
-
-    // Draw special food if it exists
-    if (specialFood) {
-        ctx.fillStyle = '#FFD700'; // Special food color (gold)
-        ctx.fillRect(specialFood.x, specialFood.y, box, box);
-    }
-
-    // Draw obstacles
-    ctx.fillStyle = '#ffc107'; // Obstacle color yellow
-    for (const obstacle of obstacles) {
-        ctx.fillRect(obstacle.x, obstacle.y, box, box);
-    }
-
-    // Get the current head position
-    const snakeX = snake[0].x;
-    const snakeY = snake[0].y;
-
-    // Check if the snake eats the food
-    if (snakeX === food.x && snakeY === food.y) {
-        foodCounter++; // Increment food counter
-        score++;
-        // Check if it's time for a special food
-        if (foodCounter === 5) {
-            // Create special food
-            specialFood = {
-                x: Math.floor(Math.random() * 18 + 1) * box,
-                y: Math.floor(Math.random() * 18 + 1) * box
-            };
-            foodCounter = 0; // Reset food counter
-        }
-        // Generate new regular food
-        food = generateFood();
-    } else {
-        // Remove the tail
-        snake.pop();
-    }
-
-    // Check if the snake eats the special food
-    if (specialFood && snakeX === specialFood.x && snakeY === specialFood.y) {
-        score += 5; // Add 5 points for special food
-        specialFood = null; // Remove special food after eating
-    }
-
-    // Move the snake
-    if (direction === 'LEFT') snake.unshift({ x: snakeX - box, y: snakeY });
-    if (direction === 'UP') snake.unshift({ x: snakeX, y: snakeY - box });
-    if (direction === 'RIGHT') snake.unshift({ x: snakeX + box, y: snakeY });
-    if (direction === 'DOWN') snake.unshift({ x: snakeX, y: snakeY + box });
-
-    // Check for collisions with walls
-    if (snake[0].x < 0 || snake[0].x >= canvas.width ||
-        snake[0].y < 0 || snake[0].y >= canvas.height ||
-        collision(snake) || collisionWithObstacles(snake)) {
-        clearInterval(gameInterval);
-        alert('Game Over! Your score: ' + score);
-        document.location.reload(); // Reload the page to restart
-    }
 }
 
 function drawFoodAndObstacles() {
     // Draw the food
-    ctx.fillStyle = '#dc3545'; // Food color red
+    ctx.fillStyle = '#dc3545'; // Regular food color (red)
     ctx.fillRect(food.x, food.y, box, box);
 
     // Draw special food if it exists
     if (specialFood) {
-        ctx.fillStyle = '#FFD700'; // Special food color (gold)
+        ctx.fillStyle = '#800080'; // Special food color (purple)
         ctx.fillRect(specialFood.x, specialFood.y, box, box);
     }
 
@@ -299,9 +237,20 @@ function drawFoodAndObstacles() {
     }
 }
 
-function generateFood() {
+function generateFood() { // Generate food at a random position
     return {
         x: Math.floor(Math.random() * (canvas.width / box)) * box,
-        y: Math.floor(Math.random() * (canvas.height / box)) * box
+        y: Math.floor(Math.random() * (canvas.height / box)) * box,
     };
+}
+
+function addObstacle() { // Add an obstacle at a random position
+    const obstacle = { // Generate a random position for the obstacle
+        x: Math.floor(Math.random() * (canvas.width / box)) * box,
+        y: Math.floor(Math.random() * (canvas.height / box)) * box,
+    };
+    obstacles.push(obstacle);
+    if (obstacles.length > 10) { // Limit the number of obstacles
+        obstacles.shift(); // Remove the oldest obstacle if there are more than 10
+    }
 }
