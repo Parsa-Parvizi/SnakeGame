@@ -18,10 +18,4 @@ This project is a classic Snake Game developed using HTML, CSS, and JavaScript. 
 - **CSS**: For styling and design of the game.
 - **JavaScript**: For game logic and user interactions.
 
-## Installation and Setup
 
-To run this project, follow these steps:
-
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/username/repository-name.git
