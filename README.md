@@ -1,18 +1,27 @@
 # Snake Game
-A simple Snake game implemented in JavaScript using HTML5 Canvas. The game features adjustable difficulty levels, special food items, and obstacles.
-Players can control the snake using arrow keys and pause the game with the "P" key. The objective is to eat food and grow the snake while avoiding collisions with walls and obstacles.
+
+This project is a classic Snake Game developed using HTML, CSS, and JavaScript. The objective of the game is to control the snake and collect food to increase its length and score. Additionally, players must avoid colliding with walls and obstacles.
 
 ## Features
-- Adjustable difficulty levels (easy, medium, hard)
-- Special food items that increase score
-- Obstacles to avoid
-- Pause functionality
 
-## Controls
-- Arrow keys to move the snake
-- "P" to pause/resume the game
-- "G" to restart the game
+- **Simple and User-Friendly Graphics**: A clean and attractive design for a better user experience.
+- **Multiple Difficulty Levels**: Choose from different difficulty levels (Easy, Medium, Hard) that affect the game speed and number of obstacles.
+- **Special Foods**: Collect special foods that grant additional points to the player.
+- **Obstacles**: Navigate around obstacles that the player must avoid.
+- **Scoring System**: Display the current score and elapsed time.
+- **Pause and Resume Functionality**: Ability to pause the game and resume it using the "P" key.
+- **Start and Restart Buttons**: Buttons to start the game and reset it.
 
-## How to Run
-1. Clone the repository
-2. Open `index.html` in your web browser
+## Technologies
+
+- **HTML**: For the structure of the web page.
+- **CSS**: For styling and design of the game.
+- **JavaScript**: For game logic and user interactions.
+
+## Installation and Setup
+
+To run this project, follow these steps:
+
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/username/repository-name.git
